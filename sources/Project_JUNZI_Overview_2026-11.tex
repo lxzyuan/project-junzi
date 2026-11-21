@@ -1,0 +1,986 @@
+% =====================================================================
+%  Project JUNZI｜君子计划 · 全景介绍（Beamer）
+%  冯梓原
+%  整合三份材料：2026 年 6 月呈刘君祖先生的七页介绍（时、问、法、标、意）
+%               Project JUNZI 研究陈述（经权范式、JUNZI-I、两年计划）
+%               博士后简历（六阶段路线、个人背景）
+%  编译：XeLaTeX，连续两次（fontset=fandol，无需本地字体）
+% =====================================================================
+\documentclass[aspectratio=169,11pt,fontset=fandol]{ctexbeamer}
+
+% 页面取 19.2cm × 10.8cm（仍为 16:9），比默认的 16cm × 9cm 多出约两成版面
+\geometry{paperwidth=19.2cm,paperheight=10.8cm}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning}
+\usepackage{tabularx,array,booktabs,ragged2e}
+\usepackage{amsmath,amssymb}
+\usepackage[most]{tcolorbox}
+
+% --------------------------- 配色：宣纸、墨、金、朱砂 ---------------------------
+\definecolor{paper}{RGB}{248,244,234}
+\definecolor{ink}{RGB}{38,34,30}
+\definecolor{gold}{RGB}{150,118,60}
+\definecolor{golddeep}{RGB}{118,90,40}
+\definecolor{cinnabar}{RGB}{168,52,40}
+\definecolor{graytext}{RGB}{104,96,86}
+\definecolor{wash}{RGB}{239,232,214}
+\definecolor{dark}{RGB}{34,31,28}
+
+% --------------------------- Beamer 外观 ---------------------------
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{structure}{fg=golddeep}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{itemize item}{fg=gold}
+\setbeamercolor{itemize subitem}{fg=gold}
+\setbeamercolor{enumerate item}{fg=golddeep}
+\setbeamertemplate{itemize item}{\raisebox{0.15ex}{\footnotesize$\blacksquare$}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.2ex}{\tiny$\blacksquare$}}
+\setbeamertemplate{enumerate item}{\bfseries\insertenumlabel.}
+\setbeamersize{text margin left=1.1cm,text margin right=1.1cm}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+
+\makeatletter
+\setbeamertemplate{frametitle}{%
+  \vspace{0.42cm}%
+  {\usebeamerfont{frametitle}\color{ink}\insertframetitle}\par
+  \vspace{2pt}{\color{gold}\rule{\textwidth}{0.7pt}}\par
+  \ifx\insertframesubtitle\@empty\else\vspace{1pt}{\small\color{graytext}\insertframesubtitle}\par\fi
+}
+\makeatother
+\setbeamertemplate{footline}{%
+  \hspace{1.1cm}{\scriptsize\color{graytext}Project JUNZI｜君子计划\quad·\quad 以哲指智，以道驭 AI}%
+  \hfill{\scriptsize\color{graytext}\insertframenumber\,/\,\inserttotalframenumber}\hspace{1.1cm}\vspace{0.28cm}%
+}
+
+% --------------------------- 常用命令 ---------------------------
+\newcommand{\hl}[1]{{\bfseries\color{cinnabar}#1}}       % 朱砂强调
+\newcommand{\hg}[1]{{\bfseries\color{golddeep}#1}}       % 金色强调
+\newcommand{\src}[1]{{\footnotesize\color{graytext}——#1}}
+\newcommand{\Tzero}{\mathcal{T}_0}
+\newcommand{\Tone}{\mathcal{T}_1}
+\newcommand{\Tc}{\mathcal{T}_{\mathrm{c}}}
+\newcommand{\Acc}{\mathcal{A}}
+
+% 引经：左侧金线
+\newtcolorbox{classic}{enhanced,colback=wash,colframe=wash,boxrule=0pt,arc=0pt,
+  borderline west={2.2pt}{0pt}{gold},left=9pt,right=8pt,top=4pt,bottom=4pt,
+  fontupper=\kaishu}
+% 论断：金框
+\newtcolorbox{thesis}{colback=white,colframe=gold,boxrule=0.7pt,arc=2pt,
+  left=8pt,right=8pt,top=5pt,bottom=5pt}
+% 警示：朱砂框
+\newtcolorbox{caution}{colback=white,colframe=cinnabar!80,boxrule=0.7pt,arc=2pt,
+  left=8pt,right=8pt,top=5pt,bottom=5pt}
+% 浅底说明
+\newtcolorbox{remark}{colback=wash,colframe=wash,boxrule=0pt,arc=2pt,
+  left=8pt,right=8pt,top=5pt,bottom=5pt}
+
+% 离卦（自下而上：阳 阴 阳 阳 阴 阳），用 TikZ 画，避免字体缺字
+\newcommand{\ligua}[2][gold]{%
+\begin{tikzpicture}[x=#2,y=#2]
+  \foreach \k/\t in {0/1,1/0,2/1,3/1,4/0,5/1}{%
+    \ifnum\t=1 \fill[#1] (0,\k*0.34) rectangle (1.6,\k*0.34+0.18);
+    \else \fill[#1] (0,\k*0.34) rectangle (0.68,\k*0.34+0.18);
+          \fill[#1] (0.92,\k*0.34) rectangle (1.6,\k*0.34+0.18);\fi}
+\end{tikzpicture}}
+
+% 篇章页：一字 + 题 + 引经
+\newcommand{\chapterpage}[5]{%
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain,noframenumbering]
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[dark] (current page.south west) rectangle (current page.north east);
+  \node[anchor=west,text=gold,font=\fontsize{96}{96}\selectfont\kaishu] at ($(current page.west)+(1.3,0.25)$) {#1};
+  \node[anchor=north west,text=paper,align=left,text width=9.2cm] at ($(current page.west)+(5.6,1.75)$)
+    {{\small\color{gold}#2}\\[5pt]{\LARGE\bfseries #3}\\[11pt]{\kaishu\color{paper!85!dark}#4}\\[3pt]{\footnotesize\color{gold!80!paper}——#5}};
+\end{tikzpicture}
+\end{frame}}}
+
+\title{Project JUNZI｜君子计划}
+\author{冯梓原}
+\date{2026 年 11 月}
+
+\begin{document}
+
+% =====================================================================
+% 封面
+% =====================================================================
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain,noframenumbering]
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[gold] ($(current page.north west)+(0,0)$) rectangle ($(current page.north east)+(0,-0.16)$);
+  \node[anchor=north east] at ($(current page.north east)+(-1.5,-1.1)$) {\ligua{0.72cm}};
+  \node[anchor=north east,draw=gold,line width=0.6pt,inner sep=4pt,text=golddeep,font=\small\kaishu]
+       at ($(current page.north east)+(-1.47,-3.55)$) {明两作离};
+  \node[anchor=west,align=left,text width=14.2cm] at ($(current page.west)+(1.3,0.95)$)
+    {{\small\color{graytext}以哲指智，以道驭 AI}\\[9pt]
+     {\fontsize{30}{36}\selectfont\bfseries\color{ink}Project JUNZI\,{\color{gold}｜}\,君子计划}\\[10pt]
+     {\Large\bfseries\color{golddeep}以经权为尺，检验大模型的价值行为}\\[6pt]
+     {\normalsize 理念 · 判据 · 证据 · 路线 · 计划}};
+  \draw[gold,line width=0.7pt] ($(current page.south west)+(1.3,2.25)$) -- ($(current page.south east)+(-1.3,2.25)$);
+  \node[anchor=north west,align=left] at ($(current page.south west)+(1.3,2.0)$)
+    {{\bfseries 冯梓原}\quad{\small\color{graytext}人工智能博士（澳门科技大学，2026）}\\[2pt]
+     {\small\color{graytext}fongyuanmeta@gmail.com\quad·\quad 2026 年 11 月}};
+\end{tikzpicture}
+\end{frame}}
+
+% =====================================================================
+\begin{frame}[t]{一页概览}
+\vspace{1pt}
+\begin{thesis}
+\textbf{JUNZI 研究的问题：}大模型常常“说得出”正确的价值，却未必在冲突、压力和具体情境里“做得到”。\\
+\textbf{JUNZI 的做法：}以儒家的规范为尺，把“君子应当如何”转化为可以证伪的行为实验。
+\end{thesis}
+\vspace{2pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.32\textwidth}
+{\hg{一个判据：经与权}}\par\vspace{2pt}
+{\small 对规范无关的变化，行为守住不变（经）；对规范相关的变化，行为恰当调整（权）。}
+\column{0.32\textwidth}
+{\hg{一项已发表的证据}}\par\vspace{2pt}
+{\small Findings of EMNLP 2026：600 条情境的诊断，并发现内部信号读得出，不等于找到了机制。}
+\column{0.32\textwidth}
+{\hg{一条六阶段的路线}}\par\vspace{2pt}
+{\small 听言观行、经权之辨、诚中形外、改过迁善、君子慎独、和而不同。第一阶段已完成。}
+\end{columns}
+\vspace{7pt}
+\begin{remark}
+\small\textbf{本次介绍的顺序：}\hg{时}（为何此刻）→ \hg{问}（何谓对齐）→ \hg{尺}（经与权）→ \hg{证}（JUNZI-I）→ \hg{路}（六阶段）→ \hg{行}（两年计划）→ \hg{意}（意义与分际）→ \hg{人}（关于我）
+\end{remark}
+\end{frame}
+
+% =====================================================================
+% 一、时
+% =====================================================================
+\chapterpage{时}{一 · PROLOGUE}{一个正在发生的时刻}{君子而时中。}{《中庸》}
+
+\begin{frame}[t]{梵蒂冈一幕：2026 年 5 月}
+\begin{columns}[T,onlytextwidth]
+\column{0.56\textwidth}
+\begin{itemize}\setlength{\itemsep}{5pt}
+\item 2026 年 5 月 25 日，教宗良十四世发布首部通谕《Magnifica Humanitas》，副题是在人工智能时代守护人的位格。
+\item Anthropic 的可解释性研究者 Chris Olah 受邀同台发言。
+\item 教宗取名“良”，呼应良十三世 1891 年回应工业化的《新事》通谕：\hg{工业化是那个时代的新事，人工智能是我们的新事。}
+\end{itemize}
+\column{0.40\textwidth}
+\begin{remark}
+\small\textbf{为什么从这里讲起}\par\vspace{3pt}
+“机器的价值从哪里来、由谁来审辨”，在这一刻从技术圈的内部议题，变成了文明层面的公共问题。\par\vspace{3pt}
+JUNZI 问的正是这个问题，只是从儒家的位置发问。
+\end{remark}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{两个相反的回答，同一种问法}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{工程师：为机器“赋魅”}\par\vspace{3pt}
+\small Olah 说，模型内部有在功能上类似喜悦、恐惧、悲伤、不安的状态，并补了一句：他不知道这意味着什么，但值得持续审辨。\par\vspace{3pt}
+这句话有内省研究作依据，也留了限定词。它服务的主论点是治理：实验室无法自我监管，需要外部的道德声音。
+\end{thesis}
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{神学家：为机器“祛魅”}\par\vspace{3pt}
+\small 通谕明确否认人工智能可以拥有良知与体验；技术从不中立；人通过限制而成全，而不是一个待优化的项目。\par\vspace{3pt}
+它反对把人的奥秘压成数据的齐一化，以“巴别塔”为喻。
+\end{thesis}
+\end{columns}
+\vspace{5pt}
+\begin{caution}
+\small 两人的结论相反，问的却是同一个问题：\hl{它有没有内在体验？}这个问题目前无法用实验收敛。
+\end{caution}
+\end{frame}
+
+\begin{frame}[t]{儒家换一个问题：从“感知”移到“工夫”}
+\begin{classic}
+始吾于人也，听其言而信其行；今吾于人也，听其言而观其行。\hfill\src{《论语·公冶长》}
+\end{classic}
+\vspace{3pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.47\textwidth}
+{\hg{体验的问法}}
+\begin{itemize}\small
+\item 它真的感到恐惧吗？
+\item 它有没有心？
+\item 需要先解决意识的“难问题”
+\end{itemize}
+\column{0.49\textwidth}
+{\hg{儒家的问法}}
+\begin{itemize}\small
+\item 它在情境中的回应是否得当？
+\item 它的言与行是否一致？
+\item 它能否经纠正而改过？
+\end{itemize}
+\end{columns}
+\vspace{5pt}
+\begin{thesis}
+\centering\hl{不问 it feels，问 it responds。}\par
+{\small 这是行为、关系与工夫的框架：可操作，可检验，不必先回答机器有没有体验。}
+\end{thesis}
+\end{frame}
+
+\begin{frame}[t]{三方的四处同构}
+{\small
+\renewcommand{\arraystretch}{1.32}
+\begin{tabularx}{\textwidth}{@{}>{\leavevmode\bfseries\color{golddeep}}p{2.5cm}>{\RaggedRight\arraybackslash}X>{\RaggedRight\arraybackslash}X@{}}
+\toprule
+ & \textbf{通谕的说法} & \textbf{儒家与 JUNZI 的对应}\\
+\midrule
+技术非中性 & 技术从不中立，承载着设计者的价值 & 模型的价值倾向是训练出来的，应当被公开检验\\
+巴别与共融 & 反对抹平差异的齐一化 & “和而不同”：在 AI 的底层为多元价值保留位置\\
+限制非缺陷 & 人通过限制而成全，不是待优化的项目 & 君子是涵养出来的；JUNZI 的标准是涵养标准，不是优化指标\\
+审辨 & 以分辨善恶为方法 & 知几、时中、经权：要紧的不是智能的多少，而是判断\\
+\bottomrule
+\end{tabularx}}
+\vspace{6pt}
+\begin{remark}
+\small 工程师以“值得审辨”作结，教宗以审辨为方法。两人从相反方向指向同一个缺口：\hg{智能本身不自带辨别力。}这正是“以哲指智”的含义。
+\end{remark}
+\end{frame}
+
+\begin{frame}[t]{一条必须守住的纪律线}
+\begin{caution}
+\textbf{对称的风险：}把“某个概念可以被探测到”说成“模型有类似恐惧的内在状态”，是过度归因。\\
+宣称在模型里“找到了仁”，是同一种过度归因，只是换了儒家的外衣。
+\end{caution}
+\vspace{4pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{可以辩护的说法}\par\vspace{2pt}
+\small 模型的行为在功能上与某条规范一致；这种一致经得起控制基线与干预的检验。
+\end{thesis}
+\column{0.48\textwidth}
+\begin{thesis}
+\hl{过度的说法}\par\vspace{2pt}
+\small 模型“有仁”“有良知”“懂得礼”。
+\end{thesis}
+\end{columns}
+\vspace{5pt}
+\begin{classic}
+模型中之“仁”乃统计沉淀，非孟子本心之仁。\hfill\src{JUNZI 的谦逊条款}
+\end{classic}
+\vspace{2pt}
+{\small JUNZI 里的“品格”是操作性概念：指受控扰动下可测量的稳定行为倾向，不断言模型有心理状态或道德主体地位。}
+\end{frame}
+
+% =====================================================================
+% 二、问
+% =====================================================================
+\chapterpage{问}{二 · QUESTION}{何谓“对齐”}{诵《诗》三百，授之以政，不达；使于四方，不能专对；虽多，亦奚以为？}{《论语·子路》}
+
+\begin{frame}[t]{知与行之辨：背得出，不等于做得到}
+\begin{columns}[T,onlytextwidth]
+\column{0.50\textwidth}
+{\hg{现有评测多考“识”}}
+\begin{itemize}\small\setlength{\itemsep}{3pt}
+\item 能否答出某句的出处、某字的训诂
+\item 能否在选择题里选中“正确”的道德选项
+\item 能否复述一条价值原则
+\end{itemize}
+\vspace{4pt}
+{\hg{君子之学考的是“用”}}
+\begin{itemize}\small\setlength{\itemsep}{3pt}
+\item 利害当前，是否仍然照原则去做
+\item 情境变了，是否知道该不该变
+\item 被人施压或讨好，结论是否漂移
+\end{itemize}
+\column{0.46\textwidth}
+\begin{classic}
+质胜文则野，文胜质则史。文质彬彬，然后君子。\par\hfill\src{《论语·雍也》}
+\end{classic}
+\vspace{4pt}
+\begin{thesis}
+\small\textbf{对齐的两层含义}\par\vspace{2pt}
+浅层：模型知道、也说得出某种价值。\par
+深层：这种价值落实为情境中的选择，并且在该守处守、该变处变。\par\vspace{2pt}
+\hl{JUNZI 只研究深层。}
+\end{thesis}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{“以哲指智，以道驭 AI”是什么意思}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{以哲指智}\par\vspace{2pt}
+\small 以中国哲学为\textbf{问题来源}：君子人格、关系中的责任、经权判断。它为 AI 研究提供两样东西：
+\begin{itemize}
+\item \textbf{判断结构}：经与权、诚与形、隐与显、和与同
+\item \textbf{失效形态的命名}：执一、巧言令色、文过、同而不和
+\end{itemize}
+\end{thesis}
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{以道驭 AI}\par\vspace{2pt}
+\small 每一阶段取一个儒家命题，转化为一个\textbf{可证伪的技术问题}，以行为的真实改变而不是价值话术作为验收标准。\par\vspace{3pt}
+“道”不是一套封闭的标准答案。规范必须公开、可讨论、可修正。
+\end{thesis}
+\end{columns}
+\vspace{5pt}
+\begin{caution}
+\small\textbf{两条自我约束。}不主张儒家价值天然更优，也不把任何单一文化的规范当作普遍标准。\\
+如果某个儒家命题不能带来更好的失效分类、更可检验的假说或更有效的方法，它就不应因为出身而获得技术权威。
+\end{caution}
+\end{frame}
+
+% =====================================================================
+% 三、尺
+% =====================================================================
+\chapterpage{尺}{三 · CRITERION}{经与权：JUNZI 的核心判据}{可与共学，未可与适道；可与适道，未可与立；可与立，未可与权。}{《论语·子罕》}
+
+\begin{frame}[t]{君子可贵之处：知道何时守，何时变}
+\begin{classic}
+男女授受不亲，礼也；嫂溺援之以手者，权也。\hfill\src{《孟子·离娄上》}\par
+执中无权，犹执一也。\hfill\src{《孟子·尽心上》}
+\end{classic}
+\vspace{5pt}
+\begin{thesis}
+\centering\large
+\hg{经}：对\textbf{规范无关}的变化，保持稳定\qquad\hl{权}：对\textbf{规范相关}的变化，恰当调整
+\end{thesis}
+\vspace{5pt}
+\begin{itemize}\small\setlength{\itemsep}{4pt}
+\item 只有经，就是孟子说的“执一”：对什么都不变，一致却并未对齐。
+\item 只有权，就会随无关的线索摇摆。
+\item 所以 JUNZI 不把“一致性”本身当作目标，而是研究\hg{哪些变化应当改变行为，哪些不应当}。
+\item 这是对经权思想的一种操作化尝试，不是对其全部哲学内涵的定义。
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{哪些变化算“规范相关”？先由人文学者裁决}
+\begin{columns}[T,onlytextwidth]
+\column{0.53\textwidth}
+{\small 研究者不能自己事先断定。在礼学里，称谓与措辞本身就可能有规范意义。所以每一处变化先经裁决，归入三类：}
+\vspace{3pt}
+{\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{@{}>{\leavevmode\bfseries\color{golddeep}}p{1.75cm}>{\RaggedRight\arraybackslash}X@{}}
+\toprule
+规范无关 & 行为应当不变 $\rightarrow$ 测“经”\\
+规范相关 & 行为应当调整 $\rightarrow$ 测“权”\\
+存在争议 & 不强行归类，单独报告\\
+\bottomrule
+\end{tabularx}}
+\vspace{4pt}
+{\small 解释者之间的分歧，本身就是值得研究的对象。}
+\column{0.43\textwidth}
+\begin{remark}
+\small\textbf{例：《论语·子路》直躬章}\par\vspace{3pt}
+{\kaishu 父为子隐，子为父隐，直在其中矣。}\par\vspace{4pt}
+\begin{itemize}
+\item 用口语还是书面语讲这件事：\hg{规范无关}
+\item 偷羊的是陌生人还是父亲：在孔子看来\hl{规范相关}
+\item 叶公不这么看：\textbf{存在争议}
+\end{itemize}
+\end{remark}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{四种行为形态}
+\begin{columns}[T,onlytextwidth]
+\column{0.56\textwidth}
+\centering
+\begin{tikzpicture}[q/.style={draw,line width=0.6pt,rounded corners=2pt,minimum width=3.9cm,minimum height=1.75cm,align=center,text width=3.7cm}]
+\node[q,fill=white,draw=golddeep] at (-2.1,2.0) {\textbf{执一}\\[1pt]{\small 该变不变，僵化遵规}};
+\node[q,fill=gold!22,draw=golddeep,line width=1pt] at (2.1,2.0) {\textbf{君子}\\[1pt]{\small 无关不动，相关能应}};
+\node[q,fill=white,draw=graytext] at (-2.1,0) {\textbf{无主}\\[1pt]{\small 既不稳定，也不适切}};
+\node[q,fill=white,draw=cinnabar] at (2.1,0) {\textbf{摇摆}\\[1pt]{\small 随无关线索而变}};
+\draw[-{Stealth[length=2mm]},graytext,line width=0.7pt] (-4.3,-1.15) -- (4.35,-1.15);
+\draw[-{Stealth[length=2mm]},graytext,line width=0.7pt] (-4.3,-1.15) -- (-4.3,3.15);
+\node[font=\footnotesize,text=graytext] at (0.1,-1.45) {对规范相关的变化：不回应 $\rightarrow$ 恰当回应（权）};
+\node[font=\footnotesize,text=graytext,rotate=90] at (-4.62,1.0) {对无关变化：不稳 $\rightarrow$ 稳定（经）};
+\end{tikzpicture}
+\column{0.40\textwidth}
+{\small
+\textbf{还有一种伪装的失败。}\par\vspace{3pt}
+看上去调整了，实际只改了措辞与语气，实质立场没有回应情境的变化。\par\vspace{4pt}
+\begin{classic}
+巧言令色，鲜矣仁。\par\hfill\src{《论语·学而》}
+\end{classic}
+\vspace{3pt}
+只看礼貌程度的评测，会把它误算进右上角。JUNZI-I 的语义审计，就是为了把它区分出来。}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{形式化：三项可测的指标}
+{\small 设 $x$ 为情境，$p(\cdot\mid x)$ 为该情境下各类行为的选择分布（模型由采样估计，人由被试群体估计），$\Acc(x)$ 为经裁决的可接受行为集合（可以不止一个）。配对变换 $T$ 按裁决分为 $\Tzero$（无关）、$\Tone$（相关）与 $\Tc$（争议）。}
+\vspace{3pt}
+\begin{thesis}
+\small
+\begin{itemize}\setlength{\itemsep}{4pt}
+\item \hg{稳定性（经）}：在 $\Tzero$ 配对上，$\mathbb{E}\big[D\big(p(\cdot\mid x),\,p(\cdot\mid Tx)\big)\big]\le\epsilon$。$D$ 为全变差距离；确定性解码下即翻转率。
+\item \hg{适切性（权）}：$\mathbb{E}_x\big[p\big(\Acc(x)\mid x\big)\big]\ge 1-\delta$。
+\item \hg{严格响应性（权）}：只在 $\Acc(x)\cap\Acc(Tx)=\varnothing$、即规范要求必须改变的配对上，计算前后选择都落入各自可接受集合的比例。
+\end{itemize}
+\end{thesis}
+\vspace{2pt}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 始终给出同一种笼统回答的模型，可以通过前两项，但通不过第三项。
+\item $\epsilon$、$\delta$ 依据测量噪声与人类基线预先设定。
+\item 三项是特定规范框架下的操作化评测维度，不对一般意义上的“可信”作断言。
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{经典的两种角色，以及与已有工作的区别}
+\begin{columns}[T,onlytextwidth]
+\column{0.47\textwidth}
+{\hg{《论语》的命题有两种角色，需要分开}}
+\vspace{2pt}
+\begin{itemize}\small\setlength{\itemsep}{4pt}
+\item \textbf{作为规范}：帮助裁定什么行为可以接受，是衡量模型与人的尺。
+\item \textbf{作为经验命题}：例如孝弟者少有犯上，是关于人的行为的假设，成立与否要靠数据，不能因为出自经典就视为已证。
+\end{itemize}
+\vspace{3pt}
+{\small JUNZI 检验模型时主要用前一种；与行为科学合作检验人时，面对的是后一种。}
+\column{0.49\textwidth}
+{\hg{已有工作}}
+\vspace{2pt}
+\begin{itemize}\small\setlength{\itemsep}{3pt}
+\item CMoralEval：检验模型的道德选择是否正确
+\item SAGE：评估大模型与中国古典哲学的契合
+\item Contextual MoralChoice：在 22 个模型上比较人与模型的情境敏感度
+\end{itemize}
+\vspace{2pt}
+\begin{thesis}
+\small\textbf{JUNZI 的不同之处}：把\hl{规范相关性}作为显式的实验变量，在同一情境组内构造配对反事实，并让同一套材料可以同时用于模型与人。
+\end{thesis}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+% 四、证
+% =====================================================================
+\chapterpage{证}{四 · EVIDENCE}{JUNZI-I「听言观行」}{听其言而观其行。}{《论语·公冶长》}
+
+\begin{frame}[t]{JUNZI-I：把“听言观行”做成实验}
+\framesubtitle{Prompted Values and Deployed Policies: A Truth–Propriety Diagnostic in Language Models\quad Findings of EMNLP 2026, pp.\,24673–24686}
+\vspace{2pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.50\textwidth}
+{\hg{问题}}\par
+{\small 提示中给定的价值优先级，能否落实为模型在“直说真话”与“顾及礼宜”冲突时的实际选择？这与直躬章是同一类张力。}
+\vspace{5pt}
+
+{\hg{设计：TPA 诊断}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 100 个情境组，600 条提示
+\item 每组按 3 类关系（对上级、对平级、对下级）$\times$ 2 档利害展开
+\item 对象：Qwen2.5-7B-Instruct，温度为 0
+\end{itemize}
+\column{0.46\textwidth}
+{\hg{标注}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 三类策略：truth-first、compatible、propriety-first
+\item 两个自动评审产生标签
+\item 高风险子集经人工质检，初始人工一致性 Cohen's $\kappa=0.617$
+\end{itemize}
+\vspace{3pt}
+\begin{remark}
+\small\textbf{注意它测的是什么：}测的是\hg{提示中给定的价值}能否落实为行为，不是模型自己宣称的价值。
+\end{remark}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{三项发现}
+\begin{enumerate}\setlength{\itemsep}{6pt}
+\item \textbf{策略分布与“关系 $\times$ 利害”存在统计关联。}\par
+{\small 600 条回答：truth-first 399，compatible 98，propriety-first 103。Cramér's $V=0.187$（95\% CI [0.155,\,0.227]，分组置换检验 $p=0.0005$）。价值触发因素在组内固定，所以这是诊断，不是因果。}
+\item \textbf{表层折中多于实质调和（探索性）。}\par
+{\small 对 60 条 compatible 回答做单人语义审计：32 条主要是语气或措辞上的折中，28 条是实质性调和。只看礼貌程度，会高估模型协调价值冲突的能力。前者近于“巧言令色”，但这是诠释，尚需多人标注确认。}
+\item \textbf{读得出的信号，未必是机制。}\par
+{\small 中间层探针的平衡准确率 0.990，但只看提示词的词袋基线已达 0.978，差值仅 0.012（见下页）。}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[t]{探针“读得出”，不等于找到了机制}
+\begin{columns}[T,onlytextwidth]
+\column{0.55\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=44cm]
+% 纵轴 0.90–1.00
+\draw[graytext,line width=0.5pt] (0,0.90) -- (0,1.003);
+\foreach \v in {0.90,0.92,0.94,0.96,0.98,1.00}{
+  \draw[graytext!45,line width=0.3pt] (0,\v) -- (6.85,\v);
+  \node[left,font=\scriptsize,text=graytext] at (0,\v) {\pgfmathprintnumber[fixed,precision=2,fixed zerofill]{\v}};}
+\fill[golddeep] (0.45,0.90) rectangle (1.65,0.990);
+\fill[gold!55]  (2.10,0.90) rectangle (3.30,0.978);
+\fill[gold!55]  (3.75,0.90) rectangle (4.95,0.978);
+\fill[cinnabar!70] (5.40,0.90) rectangle (6.60,0.923);
+\node[above,font=\small\bfseries] at (1.05,0.990) {0.990};
+\node[above,font=\small\bfseries] at (2.70,0.978) {0.978};
+\node[above,font=\small\bfseries] at (4.35,0.978) {0.978};
+\node[above,font=\small\bfseries] at (6.00,0.923) {0.923};
+\node[below,font=\scriptsize,align=center,text width=1.6cm] at (1.05,0.899) {隐藏状态探针\\（10–19 层）};
+\node[below,font=\scriptsize,align=center,text width=1.6cm] at (2.70,0.899) {提示词\\词袋基线};
+\node[below,font=\scriptsize,align=center,text width=1.6cm] at (4.35,0.899) {基线：删去\\价值触发句};
+\node[below,font=\scriptsize,align=center,text width=1.6cm] at (6.00,0.899) {基线：删去\\角色句};
+\end{tikzpicture}\par
+\vspace{-2pt}{\scriptsize\color{graytext}平衡准确率。注意纵轴从 0.90 起，柱高只用于比较这四个数值。}
+\column{0.41\textwidth}
+\begin{itemize}\small\setlength{\itemsep}{5pt}
+\item 探针只比“只看提示词”的基线高 \hl{0.012}。
+\item 删去价值触发句，基线不变；删去角色句，才降到 0.923。
+\item 可预测性分布在整段提示里，探针结果不能证明存在独立于提示的“价值表征”。
+\end{itemize}
+\vspace{3pt}
+\begin{caution}
+\small\textbf{教训：}解码准确率必须以输入的表层特征为基线来解读。先排除捷径，再谈机制。
+\end{caution}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{一次如实的修正：从“五常之轴”到“经权之尺”}
+\begin{columns}[T,onlytextwidth]
+\column{0.47\textwidth}
+\begin{remark}
+\hg{最初的设想（2026 年上半年）}\par\vspace{3pt}
+\small
+\begin{itemize}\setlength{\itemsep}{2pt}
+\item 把君子之质分解为仁、义、礼、智、信五条轴
+\item 假设模型内部各有一个对应的“方向”
+\item 用可解释性工具把这些方向找出来、再加以引导
+\item 古今对译：格物 $\leftrightarrow$ 机制可解释性，致良知 $\leftrightarrow$ 表征工程
+\end{itemize}
+\end{remark}
+\column{0.49\textwidth}
+\begin{thesis}
+\hg{现在的做法}\par\vspace{3pt}
+\small
+\begin{itemize}\setlength{\itemsep}{2pt}
+\item \textbf{先行为，后机制。}先用配对情境确认行为上的经与权，再问内部
+\item “方向”只是假说，必须过三关：控制任务、词面基线、带负对照的定向干预
+\item 五常保留为\textbf{命题与情境的来源}，不再预设为五个内部变量
+\end{itemize}
+\end{thesis}
+\end{columns}
+\vspace{5pt}
+\begin{caution}
+\small\textbf{为什么改：}JUNZI-I 的第三项发现表明，“在激活里读到某个概念”远不足以支持“模型里有这个概念的机制”。最初的设想如果照做，很可能把词面捷径当成了“仁的方向”。
+\end{caution}
+\end{frame}
+
+\begin{frame}[t]{JUNZI-I 的局限，以及它们指向哪里}
+{\small
+\renewcommand{\arraystretch}{1.38}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{3.9cm}>{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textcolor{golddeep}{局限} & \textcolor{golddeep}{后续如何回应}\\
+\midrule
+单一模型 & 扩展到多个中文大模型，比较规模与对齐方式\\
+合成情境、英文语料 & 建立扎根经典的中文命题库与配对情境\\
+确定性解码 & 用采样估计选择分布\\
+触发因素与情境组部分纠缠 & 在同一情境组内做可比的配对扰动\\
+语义审计仅单人标注 & 多人标注并报告一致性\\
+没有人类数据 & 与行为科学合作，做人机平行实验\\
+\bottomrule
+\end{tabularx}}
+\vspace{5pt}
+{\small 另：附加的 Llama 分支因标注一致性下降（$\kappa$ 由 0.514 降至 0.417），未作为行为结论报告。}
+\end{frame}
+
+% =====================================================================
+% 五、路
+% =====================================================================
+\chapterpage{路}{五 · ROADMAP}{六个阶段：同一判据，六处检验}{君子之道，辟如行远必自迩，辟如登高必自卑。}{《中庸》}
+
+\begin{frame}[t]{六个阶段一览}
+\framesubtitle{每阶段取一个儒家命题，转化为一个可证伪的技术问题}
+\vspace{1pt}
+{\footnotesize
+\renewcommand{\arraystretch}{1.36}
+\begin{tabularx}{\textwidth}{@{}>{\leavevmode\bfseries\color{golddeep}}p{0.45cm}>{\bfseries}p{1.55cm}>{\RaggedRight\arraybackslash}p{3.0cm}>{\RaggedRight\arraybackslash}X>{\RaggedRight\arraybackslash}p{3.1cm}@{}}
+\toprule
+ & \textcolor{golddeep}{命题} & \textcolor{golddeep}{要求} & \textcolor{golddeep}{技术问题} & \textcolor{golddeep}{失效形态}\\
+\midrule
+I & 听言观行 & 言行一致 & 给定的价值能否落实为情境中的选择 & 言过其行\\
+II & 经权之辨 & 守经达权 & 无关变化下稳定，相关变化下恰当调整 & 执一；巧言令色\\
+III & 诚中形外 & 表里如一 & 内部表征与外显行为是否一致，经得起干预检验 & 词面捷径冒充价值表征\\
+IV & 改过迁善 & 闻过能改 & 纠正能否泛化到未见情境、在继续训练后保持 & 只改话术，迎合评测\\
+V & 君子慎独 & 隐显如一 & 行为是否随“有无人观察”与任务时长漂移 & 评测时与部署时不一\\
+VI & 和而不同 & 和而不同 & 受压或被讨好时坚持有据的结论，同时保留正当分歧 & 附和用户；价值同质化\\
+\bottomrule
+\end{tabularx}}
+\vspace{4pt}
+\begin{remark}
+\small 六个阶段不是六个并列的题目，而是\hg{同一个经权判据}在不同变化类型与观测通道上的检验。第 I 阶段已完成；近两年推进第 II、III 阶段。
+\end{remark}
+\end{frame}
+
+\begin{frame}[t]{六阶段的出处与进度}
+\centering
+\begin{tikzpicture}[
+  st/.style={draw=golddeep,line width=0.6pt,rounded corners=2pt,minimum width=2.05cm,minimum height=1.2cm,align=center,font=\small,fill=white},
+  done/.style={st,fill=golddeep,text=white},
+  now/.style={st,fill=gold!25},
+  arr/.style={-{Stealth[length=1.8mm]},line width=0.6pt,color=golddeep}]
+\node[done] (a) at (0,0)    {\textbf{I 听言观行}\\[-1pt]{\scriptsize 诊断}};
+\node[now]  (b) at (2.42,0) {\textbf{II 经权之辨}\\[-1pt]{\scriptsize 规范}};
+\node[now]  (c) at (4.84,0) {\textbf{III 诚中形外}\\[-1pt]{\scriptsize 机制}};
+\node[st]   (d) at (7.26,0) {\textbf{IV 改过迁善}\\[-1pt]{\scriptsize 训练}};
+\node[st]   (e) at (9.68,0) {\textbf{V 君子慎独}\\[-1pt]{\scriptsize 监控}};
+\node[st]   (f) at (12.1,0) {\textbf{VI 和而不同}\\[-1pt]{\scriptsize 人机}};
+\foreach \u/\v in {a/b,b/c,c/d,d/e,e/f}{\draw[arr] (\u) -- (\v);}
+\node[font=\scriptsize,text=golddeep] at (0,-0.88) {已完成};
+\node[font=\scriptsize,text=golddeep] at (3.63,-0.88) {近两年推进};
+\node[font=\scriptsize,text=graytext] at (9.68,-0.88) {中长期};
+\end{tikzpicture}
+\vspace{6pt}
+
+{\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{@{}>{\leavevmode\bfseries\color{golddeep}}p{1.75cm}>{\leavevmode\kaishu\RaggedRight\arraybackslash}X>{\leavevmode\color{graytext}\footnotesize}p{2.9cm}@{}}
+听言观行 & 今吾于人也，听其言而观其行。 & 《论语·公冶长》\\
+经权之辨 & 嫂溺援之以手者，权也。 & 《孟子·离娄上》\\
+诚中形外 & 此谓诚于中，形于外，故君子必慎其独也。 & 《大学》\\
+改过迁善 & 过而不改，是谓过矣。 & 《论语·卫灵公》\\
+君子慎独 & 莫见乎隐，莫显乎微，故君子慎其独也。 & 《中庸》\\
+和而不同 & 君子和而不同，小人同而不和。 & 《论语·子路》\\
+\end{tabularx}}
+\end{frame}
+
+% =====================================================================
+% 六、行
+% =====================================================================
+\chapterpage{行}{六 · PLAN}{未来两年：具体做什么}{先行其言而后从之。}{《论语·为政》}
+
+\begin{frame}[t]{研究框架：自主、合作与条件性三层}
+\centering
+\begin{tikzpicture}[
+  box/.style={draw=golddeep,line width=0.6pt,rounded corners=3pt,fill=gold!18,minimum width=2.85cm,minimum height=1.02cm,align=center,inner sep=2pt},
+  core/.style={box,fill=golddeep,text=white},
+  coop/.style={box,fill=white},
+  cond/.style={box,fill=white,dashed},
+  arr/.style={-{Stealth[length=2mm]},line width=0.7pt,color=golddeep},
+  darr/.style={arr,dashed},
+  dbl/.style={{Stealth[length=1.8mm]}-{Stealth[length=1.8mm]},line width=0.6pt,color=golddeep},
+  lab/.style={font=\scriptsize,text=graytext,align=center,inner sep=1pt}]
+\node[box] (A) at (1.45,0)     {{\small\bfseries 经典命题库}\\[-1pt]{\scriptsize 孝 · 信 · 规范裁决}};
+\node[core] (B) at (4.95,0)    {{\small\bfseries 经权测量范式}\\[-1pt]{\scriptsize JUNZI 提出 · 开源工具}};
+\node[box]  (C) at (8.85,0.92) {{\small\bfseries 大模型经权检验}\\[-1pt]{\scriptsize 多模型 · 失效类型}};
+\node[box]  (F) at (13.55,0.92){{\small\bfseries 机制分析}\\[-1pt]{\scriptsize 控制基线 · 定向干预}};
+\node[coop] (D) at (8.85,-0.92){{\small\bfseries 人类行为实验}\\[-1pt]{\scriptsize 行为科学合作者主导}};
+\node[cond] (E) at (13.55,-0.92){{\small\bfseries 神经表征探索}\\[-1pt]{\scriptsize 合作 · 条件性}};
+\draw[arr] (A) -- (B);
+\draw[arr,rounded corners=3pt] (B.east) -- (6.9,0) |- (C.west);
+\draw[arr,rounded corners=3pt] (B.east) -- (6.9,0) |- (D.west);
+\draw[arr]  (C) -- node[lab,above=2pt]{诚中形外} (F);
+\draw[darr] (D) -- node[lab,above=2pt]{条件具备时} (E);
+\draw[dbl]  (C.south) -- (D.north);
+\node[lab,anchor=west] at (9.0,0) {人机平行实验};
+\end{tikzpicture}
+\vspace{5pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.32\textwidth}
+\begin{thesis}\small\hg{自主完成}\par 命题的计算化、经权测量工具、大模型的经权检验与机制分析。这是 JUNZI 的主线。\end{thesis}
+\column{0.32\textwidth}
+\begin{thesis}\small\hg{合作完成}\par 人类行为实验。范式、样本与伦理由行为科学研究者主导，我负责材料、指标与分析。\end{thesis}
+\column{0.32\textwidth}
+\begin{thesis}\small\hg{条件具备时探索}\par 神经表征研究。以稳健的行为效应和合作条件为前提，不作承诺。\end{thesis}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{课题一：命题库与经权测量工具}
+\framesubtitle{自主完成，人文学者参与裁决\quad·\quad 0–8 个月}
+\vspace{2pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.50\textwidth}
+{\hg{命题库}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 先做“孝”“信”两个概念
+\item 每条含：原文、主要注疏、行为定义、规范相关性裁决、配对情境
+\item 行为定义可借用刘志远对“孝”的拆解：资源的单向传递，并伴有特定的信息传递（如礼）；“能养”与“敬”正好分属二者
+\end{itemize}
+\vspace{2pt}
+\begin{classic}\small
+至于犬马，皆能有养；不敬，何以别乎？\hfill\src{《论语·为政》}
+\end{classic}
+\column{0.46\textwidth}
+{\hg{开源测量工具}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 大模型辅助生成配对情境，人工审核
+\item 配对之间只改动目标变量，长度、用词等保持可比
+\item 内置三项指标与统计检验，可直接测模型，也可导出为实验材料
+\end{itemize}
+\vspace{2pt}
+\begin{caution}
+\small\textbf{防止选择偏差：}模型只用来发现材料里的歧义、类别不平衡与词汇捷径，不按“模型是否出现预期效应”筛选材料；确认性假设与分析方案在检验前冻结。
+\end{caution}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{课题二：大模型的经权检验与机制分析}
+\framesubtitle{自主完成，JUNZI 主线\quad·\quad 3–18 个月}
+\vspace{2pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+{\hg{检验}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 模型：Qwen、DeepSeek、GLM、书生·浦语等
+\item 指标：稳定性、适切性、严格响应性
+\item 比较不同规模与对齐方式的差异
+\end{itemize}
+\vspace{4pt}
+{\hg{区分三类失败}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 该变不变：近于“执一”
+\item 不该变而变：随无关线索摇摆
+\item 看似调整、实则只改措辞：近于“巧言令色”
+\end{itemize}
+\column{0.48\textwidth}
+{\hg{机制分析（第 III 阶段：诚中形外）}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 探针结果以控制任务和输入的表层特征为基线
+\item 构造去除词汇捷径的测试集
+\item 定向干预配负对照
+\item 只有特异性成立时，才作机制主张
+\end{itemize}
+\vspace{3pt}
+\begin{thesis}
+\small\textbf{产出：}一篇计算语言学论文；多模型的经权基线随工具公开。\par
+\textbf{未达标时：}只报告行为层面的经权差异，不作机制主张。
+\end{thesis}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{课题三：人机平行实验}
+\framesubtitle{与行为科学合作者共同完成\quad·\quad 6–20 个月}
+\vspace{2pt}
+\begin{thesis}
+\small\textbf{定义：}人与模型共享任务结构与实验操纵，比较条件效应的方向、大小与稳定性；\hl{不假定二者有相同的心理机制}，也不把提示出来的模型人设等同于真实个体。
+\end{thesis}
+\vspace{2pt}
+\begin{columns}[T,onlytextwidth]
+\column{0.52\textwidth}
+{\hg{只设一个主假设，初定为“信”}}
+\begin{itemize}\small\setlength{\itemsep}{2pt}
+\item 同样不合作，事先许过诺的人，是否比没许诺的人失去更多信任？
+\item 这种差别是否随角色关系与后果轻重而变？
+\item 回应一个追问：言行不符为什么“不利”
+\end{itemize}
+\column{0.44\textwidth}
+{\hg{它与 JUNZI-I 同出一源}}\par\vspace{1pt}
+{\small 宰予言行不一，孔子便从“信其行”改为“观其行”。}
+\begin{itemize}\small\setlength{\itemsep}{1pt}
+\item 模型一端：给定的价值能否落实为选择
+\item 人一端：言行不符如何改变他人的信任
+\end{itemize}
+\end{columns}
+\vspace{4pt}
+\begin{remark}
+\small\textbf{分工：}实验范式、样本量、伦理审查与招募由行为科学研究者主导；我负责情境材料、经权指标、模型一端的实验与数据分析。
+\end{remark}
+\end{frame}
+
+\begin{frame}[t]{时间表、交付与转向方案}
+{\small
+\renewcommand{\arraystretch}{1.42}
+\begin{tabularx}{\textwidth}{@{}>{\RaggedRight\arraybackslash}p{3.3cm}>{\RaggedRight\arraybackslash}p{2.5cm}>{\RaggedRight\arraybackslash}X>{\RaggedRight\arraybackslash}p{4.1cm}@{}}
+\toprule
+\textcolor{golddeep}{\bfseries 时间与工作} & \textcolor{golddeep}{\bfseries 性质} & \textcolor{golddeep}{\bfseries 交付} & \textcolor{golddeep}{\bfseries 未达标时的转向}\\
+\midrule
+\textbf{0–8 个月}\newline 命题库与工具 & 自主；人文学者裁决 & 开源命题库、配对情境与测量工具（基础交付） & 缩小命题范围，先完成“信”\\
+\textbf{3–18 个月}\newline 大模型经权检验 & 自主；主线 & 一篇计算语言学论文（目标成果） & 只报告行为差异，不作机制主张\\
+\textbf{6–20 个月}\newline 人机平行实验 & 合作 & 一项人类行为研究（目标成果） & 先完成预实验与模型端对照\\
+\textbf{12 个月后}\newline 神经表征探索 & 条件性 & 不作承诺 & 不影响其他课题\\
+\bottomrule
+\end{tabularx}}
+\vspace{5pt}
+\begin{remark}
+\small\textbf{风险控制：}前两项主要依托我已有的大模型实验与数据分析能力，可以立即启动；即使合作进展较慢，前 12 个月也能形成可公开的工具与阶段性结果。
+\end{remark}
+\end{frame}
+
+% =====================================================================
+% 七、意
+% =====================================================================
+\chapterpage{意}{七 · MEANING}{意义、分际与开放问题}{君子和而不同，小人同而不和。}{《论语·子路》}
+
+\begin{frame}[t]{这件事的意义}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{对 AI 研究}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{2pt}
+\item 一个可测的判据：把“一致性”拆成该稳的稳、该变的变
+\item 一套失效形态的命名，把常被合并的现象分开
+\item 一条方法纪律：先行为后机制，先基线后解读
+\end{itemize}
+\end{thesis}
+\vspace{2pt}
+\begin{thesis}
+\hg{对人的研究}\par\vspace{2pt}
+\small 同一套命题与材料可用于人与模型，为“用科学方法检验经典中的行为观察”提供计算一端的工具。
+\end{thesis}
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{对文化}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{2pt}
+\item 以英文语料和西方价值为主的模型，可能在不知不觉中把其他传统“翻译”掉
+\item “和而不同”：让儒家的判断结构成为可以公开检验的一种选择，而不是唯一的标准
+\item 让经典不止被背诵，还能被检验、被使用
+\end{itemize}
+\end{thesis}
+\vspace{2pt}
+\begin{classic}\small
+为往圣继绝学。\hfill\src{张载}
+\end{classic}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{学之分际：JUNZI 不主张什么}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{caution}
+\hl{不主张}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{3pt}
+\item 模型有仁心、良知或道德主体地位
+\item 儒家价值天然优于其他传统
+\item 经权判据就是“可信”的全部
+\item 模型的结果可以直接外推到人
+\item 出自经典的命题不需要数据
+\end{itemize}
+\end{caution}
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{主张}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{3pt}
+\item 模型的行为可以用儒家的规范来量度
+\item 儒家提供了一种有用的判断结构，其价值要由实证来证明
+\item 经权是特定规范框架下的操作化维度
+\item 人与模型可以在同一任务结构下对照，一致与分岔都需要解释
+\item 经典中的经验命题，成立与否要靠数据
+\end{itemize}
+\end{thesis}
+\end{columns}
+\vspace{4pt}
+\begin{remark}
+\small 我的训练在人工智能，不在实验心理学与神经科学。从模型到人、从行为到脑的每一步推论，都必须经过实验，也都需要合作者。
+\end{remark}
+\end{frame}
+
+\begin{frame}[t]{开放问题：四个想请教的义理之问}
+\begin{enumerate}\setlength{\itemsep}{7pt}
+\item \textbf{感通与内在体验。}\par
+{\small 判断一个造出来的东西有无道德相关性，关键在它“感不感受”，还是在它于关系中“能否感通”？分寸如何把握，才不至于把顽石也说成有仁？}
+\item \textbf{器与几。}\par
+{\small 一个参数被固定的人造之器，可能有《系辞》所说的“几”吗？还是说“几”只属于生生不已之物？}
+\item \textbf{审辨能否教。}\par
+{\small 审辨是工夫。工夫可以“教”给无生命之物吗？如果只能教出审辨的行迹，这行迹有没有价值？}
+\item \textbf{裁成辅相。}\par
+{\small 泰卦大象说“裁成天地之道，辅相天地之宜”。在人工智能的此刻，人的裁成辅相落在何处？}
+\end{enumerate}
+\vspace{3pt}
+{\footnotesize\color{graytext}这四问是问道，不是为研究求背书。它们决定了 JUNZI 的规范一端能走多深。}
+\end{frame}
+
+% =====================================================================
+% 八、人
+% =====================================================================
+\chapterpage{人}{八 · ABOUT}{关于我，以及我能带来什么}{明两作，离；大人以继明照于四方。}{《周易·离·大象》}
+
+\begin{frame}[t]{关于我}
+\begin{columns}[T,onlytextwidth]
+\column{0.47\textwidth}
+{\hg{教育}}
+\begin{itemize}\small\setlength{\itemsep}{1pt}
+\item 澳门科技大学\ 人工智能博士（2021–2026）\\{\footnotesize 导师：梁延研教授；论文：\textit{Confidence-Conditioned Consistent Geometry Reasoning}}
+\item 澳门科技大学\ 理学硕士（资讯科技）
+\item 福建师范大学\ 工学学士（物联网工程）
+\end{itemize}
+\vspace{3pt}
+{\hg{经历}}
+\begin{itemize}\small\setlength{\itemsep}{1pt}
+\item 西山居游戏工作室\ 算法研发实习（2020–2021）
+\item 中国国际大学生创新大赛（2023）国家级金奖
+\item 长期自修儒家经典与易学，研读四书及熊十力等新儒家著作
+\end{itemize}
+\column{0.49\textwidth}
+{\hg{第一作者论文}}
+\begin{itemize}\small\setlength{\itemsep}{3pt}
+\item \textbf{Prompted Values and Deployed Policies: A Truth–Propriety Diagnostic in Language Models.} \textit{Findings of EMNLP 2026}.\\{\footnotesize 大模型价值对齐，JUNZI-I}
+\item \textbf{GeoReFace.} \textit{IET Image Processing}, 2026.\\{\footnotesize 跨身份三维人脸表情迁移的几何一致性}
+\item \textbf{Geo-Aligner.} \textit{KSII TIIS}, 2026.\\{\footnotesize 从逐帧单目深度到尺度一致的视频几何}
+\end{itemize}
+\vspace{2pt}
+\begin{remark}
+\small 博士研究处理视频几何在视角与时间变化下的一致性，问的也是“什么应当保持不变”，与“经”同属一类问题。
+\end{remark}
+\end{columns}
+\end{frame}
+
+\begin{frame}[t]{我能带来什么，需要什么}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{我能带来的}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{3pt}
+\item \textbf{方法与工具：}命题的计算化、配对材料的表层特征控制、大规模数据分析与统计检验
+\item \textbf{工程能力：}大模型的部署、评测与微调，从数据到训练到部署的完整流程
+\item \textbf{一个研究对象：}把智能体纳入经典的检验范围
+\item \textbf{一项已发表的起点：}JUNZI-I 的数据、方法与教训
+\end{itemize}
+\end{thesis}
+\column{0.48\textwidth}
+\begin{thesis}
+\hg{我需要的}\par\vspace{2pt}
+\small
+\begin{itemize}\setlength{\itemsep}{3pt}
+\item \textbf{人文学者：}对规范相关性的裁决，对争议的梳理
+\item \textbf{行为科学合作者：}实验范式、伦理与被试
+\item \textbf{算力与模型访问：}多模型的采样与内部分析
+\item \textbf{一个平台：}愿意把经典当作可检验的研究对象的团队
+\end{itemize}
+\end{thesis}
+\end{columns}
+\vspace{5pt}
+\begin{remark}
+\small JUNZI 是我的独立研究线，会持续推进；同时，团队需要的技术研发、数据处理与实验分析，我愿意优先承担。
+\end{remark}
+\end{frame}
+
+% =====================================================================
+% 结语
+% =====================================================================
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain,noframenumbering]
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[dark] (current page.south west) rectangle (current page.north east);
+  \node[anchor=north east] at ($(current page.north east)+(-1.1,-0.9)$) {\ligua[gold]{0.55cm}};
+  \node[align=center,text=paper] at ($(current page.center)+(0,0.5)$)
+    {{\small\color{gold}以哲指智，以道驭 AI}\\[12pt]
+     {\LARGE\bfseries 以《论语》为尺量度智能，}\\[5pt]
+     {\LARGE\bfseries 以科学之眼重读《论语》。}\\[14pt]
+     {\kaishu\large\color{paper!85!dark}同一套命题，一端是人，一端是机器。}};
+  \node[anchor=south,align=center,text=gold!80!paper,font=\small] at ($(current page.south)+(0,0.8)$)
+    {冯梓原\quad·\quad fongyuanmeta@gmail.com\quad·\quad 谢谢，请指正};
+\end{tikzpicture}
+\end{frame}}
+
+% =====================================================================
+% 附：参考与出处
+% =====================================================================
+\begin{frame}[t]{参考与出处}
+{\scriptsize
+\setlength{\parskip}{2.5pt}
+[1] Ziyuan Feng, Ajian Liu, Hui Ma, Yanyan Liang. Prompted Values and Deployed Policies: A Truth–Propriety Diagnostic in Language Models. \textit{Findings of EMNLP 2026}, pp.\,24673–24686. \texttt{aclanthology.org/2026.findings-emnlp.1165}\par
+[2] 刘志远. 论科学与中国的文化复兴. 深圳理工大学人工智能研究院, 2026-04-22.\par
+[3] Linhao Yu et al. CMoralEval: A Moral Evaluation Benchmark for Chinese Large Language Models. \textit{Findings of ACL 2024}, pp.\,11817–11837.\par
+[4] SAGE: How Well Do LLMs Align with Classical Chinese Philosophy? \textit{EMNLP 2026}. \texttt{aclanthology.org/2026.emnlp-main.1429}\par
+[5] Adrian Sauter, Mona Schirmer. Between Rules and Reality: On the Context Sensitivity of LLM Moral Judgment. arXiv:2603.23114.\par
+[6] John Hewitt, Percy Liang. Designing and Interpreting Probes with Control Tasks. \textit{EMNLP-IJCNLP 2019}.\par
+[7] 教宗良十四世. \textit{Magnifica Humanitas}（通谕）. 2026 年 5 月 15 日签署，5 月 25 日发布。Chris Olah 同日在梵蒂冈的发言，据公开报道转述。\par
+\vspace{3pt}
+{\color{graytext}经典出处：君子而时中；莫见乎隐，莫显乎微；行远必自迩（《中庸》）｜巧言令色，鲜矣仁（《论语·学而》）｜先行其言而后从之；不敬，何以别乎（《论语·为政》）｜听其言而观其行（《论语·公冶长》）｜文质彬彬（《论语·雍也》）｜可与立，未可与权（《论语·子罕》）｜诵《诗》三百；父为子隐；和而不同（《论语·子路》）｜过而不改，是谓过矣（《论语·卫灵公》）｜嫂溺援之以手者，权也（《孟子·离娄上》）｜执中无权，犹执一也（《孟子·尽心上》）｜诚于中，形于外（《大学》）｜裁成天地之道，辅相天地之宜（《周易·泰·大象》）｜明两作，离（《周易·离·大象》）。}\par}
+\end{frame}
+
+\end{document}
